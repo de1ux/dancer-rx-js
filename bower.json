@@ -1,0 +1,11 @@
+{
+  "name": "dancer-rx-js",
+  "version": "0.0.1",
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {
+    "rxjs": "2.2.20"
+  }
+}

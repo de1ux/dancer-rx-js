@@ -1,0 +1,79 @@
+<html>
+    <head>
+        <title>
+            Sweet Visualizations
+        </title>
+        <style>
+            #sweetcanvii {
+                background-color: black;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="sweetcanvii" height="800" width="800"></canvas>
+        <br />Width&nbsp;&nbsp;<input type="range" name="width" min="1" max="100" step="1" onchange="onWidthChange(this.value)"><span id="widthVal">20</span>
+        <br />Height&nbsp;&nbsp;<input type="range" name="heigth" min="1" step="10" max="90000" onchange="onHeightChange(this.value)"><span id="heightVal">90000</span>
+        <script src="node_modules/dancer/src/dancer.js"></script>
+        <script src="node_modules/dancer/src/support.js"></script>
+        <script src="node_modules/dancer/src/kick.js"></script>
+        <script src="node_modules/dancer/src/adapterWebAudio.js"></script>
+        <script src="node_modules/dancer/src/adapterMoz.js"></script>
+        <script src="node_modules/dancer/src/adapterFlash.js"></script>
+        <script src="node_modules/dancer/lib/fft.js"></script>
+        <script src="node_modules/dancer/lib/flash_detect.js"></script>
+        <script src="node_modules/dancer/plugins/dancer.fft.js"></script>
+        <script type="text/javascript">
+
+        var WIDTH = 20;
+        var HEIGHT_MULTPLIER = 90000;
+        var heightDisplay = document.getElementById('heightVal');
+        var widthDisplay = document.getElementById('widthVal');
+
+        function onWidthChange(e) {
+            WIDTH = e;
+            widthDisplay.innerHTML = e;
+        }
+
+        function onHeightChange(e) {
+            HEIGHT_MULTPLIER = e;
+            heightDisplay.innerHTML = e;
+        }
+
+        function pastelColors(){
+            var r = (Math.round(Math.random()* 127) + 127).toString(16);
+            var g = (Math.round(Math.random()* 127) + 127).toString(16);
+            var b = (Math.round(Math.random()* 127) + 127).toString(16);
+            return '#' + r + g + b;
+        }
+
+        (function () {
+            var AUDIO_FILE = 'music';
+            var canvas = document.getElementById('sweetcanvii');
+            var ctx = canvas.getContext('2d');
+            var dancer;
+
+
+            Dancer.setOptions({
+                flashSWF : '../../lib/soundmanager2.swf',
+                flashJS  : '../../lib/soundmanager2.js'
+            });
+            dancer = new Dancer();
+
+            function onUpdate() {
+                canvas.width = canvas.width;
+                var spectrum = this.getSpectrum();
+                for (var i = 0, len = spectrum.length; i < len; i++) {
+                    ctx.fillStyle = pastelColors();
+                    ctx.fillRect(i * WIDTH, 800, WIDTH, -(spectrum[i] * HEIGHT_MULTPLIER));
+                }
+            }
+
+            dancer.load({ src: AUDIO_FILE, codecs: [ 'mp3' ]})
+                  .bind('update', onUpdate)
+                  .play();
+
+            window.dancer = dancer;
+        })();
+        </script>
+    </body>
+</html>
